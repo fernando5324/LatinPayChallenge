@@ -1,5 +1,6 @@
 
-# Proyecto: Sistema de Gestión de Personajes Star Wars
+
+# Proyecto: Backend Technical Challenge LatinPay
 
 
 ## Author
@@ -25,7 +26,7 @@
         http://127.0.0.1:8000
     9. Ejecutar pruebas
         php artisan test
-        
+
 
 ## Comandos:
 
@@ -88,7 +89,30 @@ POST /api/v1/bank/reconciliation
 Compara lo que mandó el banco vs lo que tengo
 
 Detecta diferencias o pagos no encontrados
-
+```bash
+{
+  "bank": "BANK_A",
+  "process_date": "2026-04-24",
+  "movements": [
+    {
+      "bank_movement_id": "mov_001",
+      "bank_transaction_id": "bank_tx_999",
+      "payment_code": "LTP-20260503-000001",
+      "amount": 150.50,
+      "currency": "PEN",
+      "paid_at": "2026-04-24 20:44:30"
+    },
+    {
+      "bank_movement_id": "mov_002",
+      "bank_transaction_id": "bank_tx_1000",
+      "payment_code": "LTP-20260504-000002",
+      "amount": 200.00,
+      "currency": "PEN",
+      "paid_at": "2026-04-24 20:46:00"
+    }
+  ]
+}
+```  
 Pagos candidatos a liquidación
 -|
 
@@ -96,7 +120,7 @@ Solo devuelve pagos válidos para liquidar
 
 Considera hora de corte (20:45)
 
-# Decisiones que tomé :
+## Decisiones que tomé :
 #### Idempotencia (evitar duplicados)
     - event_id es único
     - bank_transaction_id también
@@ -116,6 +140,19 @@ Cuando llega la notificación se hace en job:
     - Si monto o moneda no coincide → OBSERVED
     - Si todo coincide → PAID
 
+#### Estados
+
+No hice algo súper complejo, pero sí evité cosas incoherentes
+
+Cuando llega la notificación se hace en job:
+
+    - PENDING
+    - PAID
+    - OBSERVED
+    - LATE_CONFIRMATION
+    - INCONSISTENCY
+    - UNMATCHED
+    - RECONCILED
 
 #### Índices en la base de datos
     - payment_code
@@ -135,7 +172,7 @@ Cuando un pago pasa a PAID:
     - No llamo API real, lo simulo.
     - Lo dejé preparado para que se pueda cambiar fácil.
 
-# Flujo completo
+## Flujo completo
 
     1.Creo un pago → PENDING
     2.Llega notificación del banco
