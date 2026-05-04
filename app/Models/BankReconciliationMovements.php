@@ -38,14 +38,7 @@ class BankReconciliationMovements extends Model
             
         ];
 
-        $messages = [
-            "bank.required"=>"Banco requerido",
-            "process_date.required"=>"Fecha de proceso requerida",
-            "process_date.date_format"=>"Fecha de proceso invalida",
-            "movements.required"=>"Movimientos requeridos",
-        ];
-
-        $validate = $request->validate($rules, $messages);
+        $validate = $request->validate($rules);
 
         return $validate;
     }

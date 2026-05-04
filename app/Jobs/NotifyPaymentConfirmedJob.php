@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Enums\AuditStatus;
+use App\Models\PaymentAudit;
 use App\Models\Payments;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -36,53 +38,43 @@ class NotifyPaymentConfirmedJob implements ShouldQueue
             'paid_at' => $payment->paid_at,
         ];
 
-        #$url = "https://webhook.site/874d637b-a041-4494-95c4-f0ff75967905";
         $url = route('external.notify');
-
-
 
         $externalNotification = ExternalNotifications::where('payment_id', $payment->id)->first();
 
-        if ($externalNotification) {
-            $externalNotification->update([
-                'status' => $payment->status,
-                'attempts' => $externalNotification->attempts + 1,
-                'error' => "",
-            ]);
-        } else {
-            $error= '';
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-            ])->post($url, $body);
-
-            if ($response->failed()) {
-                $error= $response->body();
-            }
-
-            if($response->requestTimeout()){
-                $error= "Request Timeout";
-            }
-
-            if($response->tooManyRequests()){
-                $error= "Too Many Requests";
-            }
-
-            if($response->serverError()){
-                $error= "Server Error";
-            }
-
-            if($response->clientError()){
-                $error= "Client Error";
-            }
-
-            ExternalNotifications::create([
-                    'payment_id' => $payment->id,
-                    'status' => $payment->status,
-                    'attempts' => 1,
-                    'error' => $error,
-                ]);
+        if ($externalNotification && $externalNotification->status === 'SUCCESS') {
+            return;
         }
 
+        $error = null;
+
+        try {
+
+            $response = Http::timeout(5)
+                ->acceptJson()
+                ->post($url, $body);
+
+            if ($response->successful()) {
+                $status = 'SUCCESS';
+            } else {
+                $status = 'FAILED';
+                $error = $response->body();
+            }
+
+        } catch (\Exception $e) {
+            $status = 'FAILED';
+            $error = $e->getMessage();
+        }
+
+        PaymentAudit::log($payment,AuditStatus::EXTERNAL_NOTIFICATION, $status, $error);
+
+        ExternalNotifications::updateOrCreate(
+            ['payment_id' => $payment->id],
+            [
+                'status' => $status,
+                'attempts' => ($externalNotification->attempts ?? 0) + 1,
+                'error' => $error
+            ]
+        );
     }
 }

@@ -40,22 +40,13 @@ class BankNotifications extends Model
             'bank_transaction_id' => 'required',
             'payment_code' => 'required',
             #'payload' => 'required |json',
-            'amount' => 'required |numeric | decimal:1,2 ',
-            'currency' => 'required | in:PEN,USD ',
+            'amount' => 'required|numeric|decimal:1,2',
+            'currency' => 'required|in:PEN,USD',
             'status' => 'required',
         ];
 
-        $messages = [
-            'event_id.required' => 'El event_id es requerido',
-            'bank_transaction_id.required' => 'El bank_transaction_id es requerido',
-            'payment_code.required' => 'El payment_code es requerido',
-            #'payload.required' => 'El payload es requerido',
-            'amount.required' => 'El amount es requerido',
-            'currency.required' => 'La currency es requerida',
-            'status.required' => 'El status es requerido',
-        ];
 
-        $validate = $request->validate($rules, $messages);
+        $validate = $request->validate($rules);
 
         return $validate;
     }

@@ -24,18 +24,18 @@ class BankNotificationApiController extends Controller
             #Al ser solo un registro a guardar no es necesario pasarlo a jobs a menos que esté saturado
             BankNotifications::validateRequest($request);
             $bankNotification = new BankNotifications();
-            $bankNotification->event_id = $request['event_id'] ?? null;
-            $bankNotification->bank_transaction_id = $request['bank_transaction_id'] ?? null;
-            $bankNotification->payment_code = $request['payment_code'] ?? null;
+            $bankNotification->event_id = $request->get('event_id') ?? null;
+            $bankNotification->bank_transaction_id = $request->get('bank_transaction_id') ?? null;
+            $bankNotification->payment_code = $request->get('payment_code') ?? null;
             $bankNotification->payload = $request->all(); # json_encode((object)$request->all());
-            $bankNotification->amount = $request['amount'] ?? null;
-            $bankNotification->currency = $request['currency'] ?? null;
-            $bankNotification->status = $request['status'] ?? null;
-            $bankNotification->paid_at = $request['paid_at'] ?? null;
+            $bankNotification->amount = $request->get('amount') ?? null;
+            $bankNotification->currency = $request->get('currency') ?? null;
+            $bankNotification->status = $request->get('status') ?? null;
+            $bankNotification->paid_at = $request->get('paid_at') ?? null;
             $bankNotification->save();
 
             ProcessBankNotificationJob::dispatch($bankNotification->id);
-            
+
             DB::commit();
 
             return response()->json($this->getDataResponseSuccess($bankNotification), 200);

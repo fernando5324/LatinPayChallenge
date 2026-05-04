@@ -10,12 +10,6 @@ class ExternalNotificationApiController extends Controller
 {
     public function notifyExternal(Request $request)
     {
-
-        //probabilidad de error
-        /* if (rand(0, 1)) {
-            return response()->json(['error' => 'fail'], 500);
-        } */
-
         try {
 
             return response()->json([

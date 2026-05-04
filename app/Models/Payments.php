@@ -39,27 +39,17 @@ class Payments extends Model
             #'payment_code' => 'required',
             'merchant_id' => 'required',
             'customer_document' => 'required',
-            'amount' => 'required | numeric | decimal:1,2',
-            'currency' => 'required | in:PEN,USD ',
+            'amount' => 'required|numeric|decimal:1,2',
+            'currency' => 'required|in:PEN,USD',
             #'status' => 'required',
            'description' => 'nullable|string',
             #'created_at' => 'required',
             #'updated_at' => 'required'
         ];
 
-        $messages = [
-            #'payment_code.required' => 'El código de pago es requerido',
-            'merchant_id.required' => 'El merchant_id es requerido',
-            'customer_document.required' => 'El customer_document es requerido',
-            'amount.required' => 'El amount es requerido',
-            'currency.required' => 'La currency es requerida',
-            #'status.required' => 'El status es requerido',
-            'description.required' => 'La description es requerida',
-            #'created_at.required' => 'El created_at es requerido',
-            #'updated_at.required' => 'El updated_at es requerido'
-        ];
 
-        $validate = $request->validate($rules, $messages);
+
+        $validate = $request->validate($rules);
 
         return $validate;
     }

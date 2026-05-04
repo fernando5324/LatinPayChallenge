@@ -1,0 +1,334 @@
+{
+  "info": {
+    "_postman_id": "7e8da53d-e8e4-477f-840a-921cb04b9419",
+    "name": "LatinPayChallenge",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13119294"
+  },
+  "item": [
+    {
+      "name": "Payment (guardar)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "X-Requested-With",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "Authorization",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"merchant_id\": 10,\r\n  \"customer_document\": \"76359665\",\r\n  \"amount\": 150.51,\r\n  \"currency\": \"PEN\",\r\n  \"description\": \"Pago de servicio mensual\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/v1/payments",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "payments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reconciliation (confirmación )",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "X-Requested-With",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "Authorization",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"bank\": \"BANK_A\",\r\n  \"process_date\": \"2026-04-24\",\r\n  \"movements\": [\r\n    {\r\n      \"bank_movement_id\": \"mov_001\",\r\n      \"bank_transaction_id\": \"bank_tx_999\",\r\n      \"payment_code\": \"LTP-20260503-000001\",\r\n      \"amount\": 150.50,\r\n      \"currency\": \"PEN\",\r\n      \"paid_at\": \"2026-04-24 20:44:30\"\r\n    },\r\n    {\r\n      \"bank_movement_id\": \"mov_002\",\r\n      \"bank_transaction_id\": \"bank_tx_1000\",\r\n      \"payment_code\": \"LTP-20260504-000002\",\r\n      \"amount\": 200.00,\r\n      \"currency\": \"PEN\",\r\n      \"paid_at\": \"2026-04-24 20:46:00\"\r\n    }\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/v1/bank/reconciliation",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "bank",
+            "reconciliation"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Bank Notification (Notificar al banco)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "X-Requested-With",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "Authorization",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"event_id\": \"evt_0012\",\r\n  \"bank_transaction_id\": \"bank_tx_999\",\r\n  \"payment_code\": \"LTP-20260504-000020\",\r\n  \"amount\": 150.50,\r\n  \"currency\": \"PEN\",\r\n  \"status\": \"PAID\",\r\n  \"paid_at\": \"2026-04-24 20:44:00\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/v1/bank/notifications",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "bank",
+            "notifications"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Candidates (Obtener datos)",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "X-Requested-With",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "Authorization",
+            "value": "{{token}}",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"event_id\": \"evt_0012\",\r\n  \"bank_transaction_id\": \"bank_tx_999\",\r\n  \"payment_code\": \"LTP-20260503-000001\",\r\n  \"amount\": 150.50,\r\n  \"currency\": \"PEN\",\r\n  \"status\": \"PAID\",\r\n  \"paid_at\": \"2026-04-24 20:44:00\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/v1/settlements/candidates",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "settlements",
+            "candidates"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}

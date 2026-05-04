@@ -26,7 +26,7 @@
         http://127.0.0.1:8000
     9. Ejecutar pruebas
         php artisan test
-
+    10.Los enpoints estan en postman en el archivo LatinPayChallenge.postman_collection.json de este proyecto.
 
 ## Comandos:
 

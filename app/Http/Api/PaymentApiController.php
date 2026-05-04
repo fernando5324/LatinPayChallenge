@@ -3,22 +3,21 @@
 namespace App\Http\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentAudit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Payments;
 use App\Enums\PaymentStatus;
+use App\Enums\AuditStatus;
 
 class PaymentApiController extends Controller
 {
     public function save(Request $request)
     {
-        #$this->checkToken($request);
-
         try {
 
             $code = Payments::generatePaymentCode();
 
-            #$validate = Payments::validateRequest($request);
             Payments::validateRequest($request);
 
             $payment = Payments::create([
@@ -30,6 +29,8 @@ class PaymentApiController extends Controller
                 'status' => PaymentStatus::PENDING,
                 'description' => $request->get('description'),
             ]);
+
+            PaymentAudit::log($payment,AuditStatus::CREATED,$payment->status,'');
 
             return response()->json($this->getDataResponseSuccess($payment), 200);
         } catch (\Exception $e) {

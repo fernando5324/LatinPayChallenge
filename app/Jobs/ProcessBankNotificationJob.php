@@ -2,10 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Enums\AuditStatus;
 use App\Enums\PaymentStatus;
 use App\Helpers\SystemConfiguration;
 use App\Models\BankNotifications;
 use App\Models\Entity;
+use App\Models\PaymentAudit;
 use App\Models\Payments;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,9 +18,6 @@ use Illuminate\Queue\SerializesModels;
 class ProcessBankNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    #public $data;
-    #public $file;
     public int $notificationId;
 
     /**
@@ -37,24 +36,25 @@ class ProcessBankNotificationJob implements ShouldQueue
         $notification = BankNotifications::find($this->notificationId);
 
         if (empty($notification)) {
-            logger("Notificación no encontrada: " . $this->notificationId);
             return;
         }
+
 
         $payment = Payments::where('payment_code', $notification->payment_code)->first();
 
         if ($payment == null || $payment->status != PaymentStatus::PENDING) {
-            logger("Pago no encontrado o no está en estado PENDING: " . $payment->payment_code);
+            #logger("Pago no encontrado o no está en estado PENDING: " . $payment->payment_code);
+
+            PaymentAudit::log($payment, AuditStatus::NO_PENDING, '', '');
             return;
         }
-
         if ($payment->amount != $notification->amount || $payment->currency != $notification->currency) {
             $payment->update([
                 "status" => PaymentStatus::OBSERVED,
                 "updated_at" => now()
             ]);
 
-            logger("Pago observado: " . $payment->payment_code);
+            PaymentAudit::log($payment, AuditStatus::INCONSISTENCY, '', '');
 
             return;
         }
@@ -65,6 +65,8 @@ class ProcessBankNotificationJob implements ShouldQueue
             "updated_at" => now()
         ]);
 
+
+        PaymentAudit::log($payment, AuditStatus::PAID_CONFIRMED, PaymentStatus::PAID, '');
         NotifyPaymentConfirmedJob::dispatch($payment);
 
     }

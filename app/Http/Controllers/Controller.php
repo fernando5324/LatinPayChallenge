@@ -11,20 +11,6 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    /* public function checkToken(Request $request)
-    {
-        #logger("request token" . $request->bearerToken());
-        #logger("token" . env('API_TOKEN'));
-
-        if ($request->bearerToken() !== env('API_TOKEN')) {
-            return response()->json([
-                'message' => 'Invalid token',
-                'data' => []
-            ], 401);
-        }
-        return true;
-    } */
-
     public function getDataResponseSuccess($data)
     {
         return [

@@ -23,23 +23,7 @@ class ExternalNotifications extends Model
     protected $casts = [
         'attempts' => 'integer',
         'error' => 'string',
-        'status' => PaymentStatus::class,
     ];
 
     public $timestamps = false;
-
-    public static function validateRequest($request)
-    {
-        $rules = [
-
-        ];
-
-        $messages = [
-
-        ];
-
-        $validate = $request->validate($rules, $messages);
-
-        return $validate;
-    }
 }
