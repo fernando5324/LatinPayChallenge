@@ -10,15 +10,15 @@ return new class extends Migration {
         Schema::create('payment_audits', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('payment_id');
+            $table->string('payment_code', 30)->nullable();
 
             $table->string('action', 50);
             $table->string('status', 20);
             $table->text('description');
             $table->timestamps();
-            $table->index('payment_id');
+            $table->index('payment_code');
             $table->index('action');
-            $table->index(['payment_id', 'created_at']);
+            $table->index(['payment_code', 'created_at']);
         });
     }
 

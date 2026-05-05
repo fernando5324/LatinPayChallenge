@@ -25,5 +25,5 @@ class ExternalNotifications extends Model
         'error' => 'string',
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 }

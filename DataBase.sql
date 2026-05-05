@@ -67,7 +67,7 @@ COMMENT 'Tabla de notificaciones externas';
 
 CREATE TABLE IF NOT EXISTS `payment_audits` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `payment_id` BIGINT UNSIGNED NOT NULL,
+  `payment_code` VARCHAR(30) NOT NULL,
   `action` VARCHAR(50) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
   `description` TEXT NULL,

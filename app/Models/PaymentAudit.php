@@ -9,7 +9,7 @@ class PaymentAudit extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'payment_id',
+        'payment_code',
         'action',
         'status',
         'description',
@@ -19,7 +19,7 @@ class PaymentAudit extends Model
     public static function log($payment, $action, $status = null, $description = null)
     {
         return self::create([
-            'payment_id' => $payment->id,
+            'payment_code' => $payment ? $payment->payment_code : $payment,
             'action' => $action,
             'status' => $status,
             'description' => $description

@@ -40,19 +40,12 @@ class NotifyPaymentConfirmedJob implements ShouldQueue
 
         $url = route('external.notify');
 
-        $externalNotification = ExternalNotifications::where('payment_id', $payment->id)->first();
-
-        if ($externalNotification && $externalNotification->status === 'SUCCESS') {
-            return;
-        }
-
         $error = null;
+        $status = '';
 
         try {
 
-            $response = Http::timeout(5)
-                ->acceptJson()
-                ->post($url, $body);
+            $response = Http::timeout(5)->acceptJson()->post($url, $body);
 
             if ($response->successful()) {
                 $status = 'SUCCESS';
@@ -66,15 +59,22 @@ class NotifyPaymentConfirmedJob implements ShouldQueue
             $error = $e->getMessage();
         }
 
-        PaymentAudit::log($payment,AuditStatus::EXTERNAL_NOTIFICATION, $status, $error);
+        PaymentAudit::log($payment, AuditStatus::EXTERNAL_NOTIFICATION, $status, $error);
 
-        ExternalNotifications::updateOrCreate(
-            ['payment_id' => $payment->id],
-            [
-                'status' => $status,
-                'attempts' => ($externalNotification->attempts ?? 0) + 1,
-                'error' => $error
-            ]
-        );
+        $externalNotification = ExternalNotifications::where('payment_id', $payment->id)->first();
+        
+        if (!$externalNotification) {
+            $externalNotification = new ExternalNotifications();
+        }
+        if ($externalNotification->status == $status) {
+            $externalNotification->attempts = ($externalNotification->attempts ?? 0) + 1;
+        }
+
+        $externalNotification->payment_id = $payment->id;
+        $externalNotification->error = $error;
+        $externalNotification->status = $status;
+        #$externalNotification->created_at = now();
+        $externalNotification->save();
+        return;
     }
 }

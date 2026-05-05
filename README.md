@@ -20,13 +20,19 @@
         php artisan key:generate
     4. Ejecutar migraciones
         php artisan migrate
-    6. Iniciar servidor
+
+        Por defecto prefiero hacer las tablas desde codigo, ya que es mas facil de mantener. Pero entiendo que en la prueba requieren hacer pruebas rapidas con migrate, por lo que no implemente el generador de migraciones.
+
+    5. Iniciar servidor
         php artisan serve
-    7. Acceder
+
+
+    6. Acceder
         http://127.0.0.1:8000
-    9. Ejecutar pruebas
+    7. Ejecutar pruebas
         php artisan test
-    10.Los enpoints estan en postman en el archivo LatinPayChallenge.postman_collection.json de este proyecto.
+        
+    8.Los enpoints estan en postman en el archivo LatinPayChallenge.postman_collection.json de este proyecto.
 
 ## Comandos:
 
@@ -125,14 +131,10 @@ Considera hora de corte (20:45)
     - event_id es único
     - bank_transaction_id también
     - Si el banco manda lo mismo 2 veces, no se duplica nada
-    - Incluso controlo el error 1062 de MySQL para ignorarlo sin romper
+    - En el punto 8 (Si el movimiento existe en conciliación pero nunca llegó por tiempo real, puedes procesarlo como confirmación tardía o dejarlo observado. Debes explicar tu decisión) decidi que no se concidera error y enviar el codigo 200 para que no vuelvan a intentar ya que puede ser que el servicio espere un código de validacion correcta.
 
 #### Jobs
-    - event_id es único
-    - bank_transaction_id también
-    - Si el banco manda lo mismo 2 veces, no se duplica nada
-    - Incluso controlo el error 1062 de MySQL para ignorarlo sin romper
-
+    - Se aplicó todas las colas de trabajo indicadas en la prueba.
 
 #### Validación de pagos
 Cuando llega la notificación se hace en job:
