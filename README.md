@@ -189,6 +189,6 @@ Cuando un pago pasa a PAID:
 
 ## Comentario
 
-    - Justamente al ser un pequeño proyecto interesante comence a practicar y mejorar algunos puntos que hacia falta y el uso de docker(estoy practicando en windows). Puede omitirlo simplemente ya que no es parte del objetivo de la prueba.
-    - La página por defecto muestra las rutas.
-    - Para las pruebas podeis usar el archivo LatinPayChallenge.postman_collection.json
+    - Justamente al ser un pequeño proyecto interesante comencé a practicar y mejorar algunos puntos que hacían falta y el uso de Docker(estoy practicando en Windows). Puede omitirlo simplemente ya que no es parte del objetivo de la prueba.
+    - La página por defecto (http://127.0.0.1:8000) muestra las rutas.
+    - Para las pruebas pueden usar el archivo LatinPayChallenge.postman_collection.json
