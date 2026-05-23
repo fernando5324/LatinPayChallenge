@@ -16,10 +16,10 @@ class PaymentAudit extends Model
     ];
 
 
-    public static function log($payment, $action, $status = null, $description = null)
+    public static function log($payment_code, $action, $status = '', $description = null)
     {
         return self::create([
-            'payment_code' => $payment ? $payment->payment_code : $payment,
+            'payment_code' => $payment_code,
             'action' => $action,
             'status' => $status,
             'description' => $description

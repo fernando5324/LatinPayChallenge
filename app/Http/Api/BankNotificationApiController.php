@@ -16,9 +16,13 @@ use App\Jobs\ProcessBankNotificationJob;
 class BankNotificationApiController extends Controller
 {
 
+    /**
+     * Notificar al banco
+
+     */
+
     public function notify(Request $request)
     {
-
         DB::beginTransaction();
         try {
             #Al ser solo un registro a guardar no es necesario pasarlo a jobs a menos que esté saturado
@@ -39,24 +43,28 @@ class BankNotificationApiController extends Controller
             DB::commit();
 
             return response()->json($this->getDataResponseSuccess($bankNotification), 200);
-
         } catch (QueryException $e) {
 
             DB::rollBack();
-            #logger($e);
             if ($e->errorInfo[1] == 1062) { #1062 codigo de error de Mysql para registros duplicados
                 #No se concidera error por lo tanto enviare codigo 200 para que no vuelvan a intentar
                 return response()->json($this->getDataResponseSuccess('Ya se ha registrado una notificación con este ID de evento'), 200);
             }
 
             return response()->json($this->getDataResponseFail($e), 500);
-
         } catch (\Throwable $th) {
 
             #logger($th->getMessage());
             return response()->json($this->getDataResponseFail($th), 500);
         }
     }
+
+
+    /**
+     * Reconciliación de pagos
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
 
     public function reconciliation(Request $request)
     {
@@ -91,7 +99,6 @@ class BankNotificationApiController extends Controller
                     if ($payment->amount != $item['amount'] || $payment->currency != $item['currency']) {
                         $status = PaymentStatus::INCONSISTENCY;
                     }
-
                 } else {
                     $status = PaymentStatus::UNMATCHED;
                 }
@@ -111,7 +118,6 @@ class BankNotificationApiController extends Controller
 
             DB::commit();
             return response()->json($this->getDataResponseSuccess($bankMovements), 200);
-
         } catch (QueryException $e) {
             DB::rollBack();
             return response()->json($this->getDataResponseFail($e), 500);
@@ -120,5 +126,4 @@ class BankNotificationApiController extends Controller
             return response()->json($this->getDataResponseFail($th), 500);
         }
     }
-
 }

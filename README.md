@@ -186,3 +186,9 @@ Cuando un pago pasa a PAID:
     8.se notifica externamente
     9.Luego se puede conciliar
     10.Finalmente pasa a liquidación
+
+## Comentario
+
+    Justamente al ser un pequeño proyecto interesante comence a practicar y mejorar algunos puntos que hacia falta y el uso de docker(estoy practicando en windows). Puede omitirlo simplemente ya que no es parte del objetivo de la prueba.
+    La página por defecto muestra las rutas.
+    Para las pruebas podeis usar el archivo LatinPayChallenge.postman_collection.json

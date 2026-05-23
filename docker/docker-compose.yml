@@ -1,0 +1,46 @@
+services:
+
+  app:
+    build:
+      context: .. #Aqui indicas que la carpeta a tomar es la que esta fuera de la carpeta docker
+      dockerfile: docker/Dockerfile #El archivo que contiene las instrucciones para crear la imagen
+    command: sh -c "php artisan optimize:clear && php artisan config:cache && php-fpm"
+    container_name: laravel_app
+    volumes:
+      - ../:/var/www #../: Carpeta raiz del proyecto. /var/www: Carpeta donde se ejecutara el proyecto en el contenedor. Con esto se sincroniza el codigo de la PC con el contenedor
+    networks:
+      - laravel 
+
+  nginx:
+    image: nginx:latest
+    container_name: laravel_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ../:/var/www
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:8
+    container_name: laravel_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: latinpaychallenge
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../database.sql:/docker-entrypoint-initdb.d/database.sql #Database.sql: Archivo que contiene la estructura de la base de datos. /docker-entrypoint-initdb.d/: Carpeta donde se ejecutara la base de datos en el contenedor.
+    networks:
+      - laravel
+
+volumes:
+  mysql_data:
+
+networks:
+  laravel:

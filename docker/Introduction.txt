@@ -1,0 +1,42 @@
+#docker build . -t test --build-arg VERSION=1.0
+
+#Si cambias el dockerfile es necesario ejecutar 
+    docker compose up -d --build #Se construye la imagen desde el dockerfile
+
+#Para generar la key de la aplicacion
+    docker compose exec app sh
+    php artisan key:generate
+
+
+#Cada vez que quieras actualizar 
+    docker compose down -v #Se bajan los contenedores
+    docker compose up -d #Se levantan los contenedores
+
+#Para ingresar a la consola de la aplicacion
+    docker compose exec app sh
+
+
+#==========================BASE DE DATOS==========================
+#Para ingresar a la consola de la base de datos
+    docker compose exec mysql sh
+    mysql -u root -p latinpaychallenge
+    USE latinpaychallenge;
+    SHOW TABLES;
+
+#Con esto generamos el backup de la base de datos desde el mismo lugar donde lo ejecutas
+    #Tiene que existir la carpeta backups/ para que funcione
+    #docker exec -t laravel_mysql /usr/bin/mysqldump -u root --password=root latinpaychallenge > backups/backup.sql  (Funciona pero agrega advertencias de contraseña)
+    docker exec -i -e MYSQL_PWD=root laravel_mysql /usr/bin/mysqldump -u root latinpaychallenge > backups/backup.sql (ELIGE ESTO POR QUE EN EL PRIMERO TE AGREGA ADVERTENCIAS DE CONTRASEÑA)
+
+    #Con fecha
+    docker exec -i -e MYSQL_PWD=root laravel_mysql mysqldump -u root latinpaychallenge > backups/backup-$(date +%Y-%m-%d_%H-%M-%S).sql (Para usar este tienes que estar dentro del terminal de linux, ejecutarlo desde powershell da error porque no reconoce el comando date)
+    docker exec -t laravel_mysql `mysqldump -u root --password=root latinpaychallenge` > "backups/backup-$(Get-Date -Format 'yyyy-MM-dd_HH-mm-ss').sql" (Para usar este tienes que estar dentro de powershell)
+
+#Ejecutar un backup ya existente
+    #docker exec -i laravel_mysql mysql -uroot -proot latinpaychallenge < backups/backup.sql (Sirve pero te muestra la advertencia de contraseña)
+    docker exec -i -e MYSQL_PWD=root laravel_mysql mysql -u root latinpaychallenge < backups/backup.sql (ELIGE ESTO POR QUE EN EL PRIMERO TE AGREGA ADVERTENCIAS DE CONTRASEÑA)
+
+
+#==========================BASE DE DATOS==========================
+
+docker exec -i -e MYSQL_PWD=root laravel_mysql mysqldump -u root latinpaychallenge > backups/backup-$(date +%Y-%m-%d_%H-%M-%S).sql

@@ -39,16 +39,22 @@ class ProcessBankNotificationJob implements ShouldQueue
             return;
         }
 
+        //logger('notificacion', [$notification->payment_code]);
 
         $payment = Payments::where('payment_code', $notification->payment_code)->first();
+        
 
-        if(!$payment){
-            PaymentAudit::log($notification->payment_code, AuditStatus::PAYMENT_NOT_FOUND, null, '');
+
+        if($payment == null){
+            //logger('pago', [$payment]);
+            PaymentAudit::log($notification->payment_code, AuditStatus::PAYMENT_NOT_FOUND, '', '');
+            //logger('pago no encontrado', [$notification]);
             return;
         }
 
         if ($payment->status != PaymentStatus::PENDING) {
             PaymentAudit::log($payment, AuditStatus::NO_PENDING, $payment->status, '');
+            //logger('pago no pendiente', [$payment]);
             return;
         }
         if ($payment->amount != $notification->amount || $payment->currency != $notification->currency) {
@@ -59,7 +65,7 @@ class ProcessBankNotificationJob implements ShouldQueue
 
             PaymentAudit::log($payment, AuditStatus::INCONSISTENCY, '', '');
 
-            logger('pago observado', [$payment]);
+            //logger('pago observado', [$payment]);
 
             return;
         }
@@ -70,7 +76,7 @@ class ProcessBankNotificationJob implements ShouldQueue
             "updated_at" => now()
         ]);
 
-        logger('pago actualizado', [$payment]);
+        //logger('pago actualizado', [$payment]);
 
         PaymentAudit::log($payment, AuditStatus::PAID_CONFIRMED, PaymentStatus::PAID, '');
         NotifyPaymentConfirmedJob::dispatch($payment);
