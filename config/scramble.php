@@ -24,13 +24,14 @@ return [
         /*
          * API version.
          */
-        'version' => env('API_VERSION', '0.0.1'),
+
+        'version' => env('API_VERSION', '1.0.0'),
 
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
          */
         'description' => '
-        API de integración bancaria desarrollada como prueba técnica para LatinPay.
+        API de integración bancaria desarrollada como prueba técnica.
 
         Esta API permite:
         - Registrar operaciones de pago
@@ -39,7 +40,7 @@ return [
         - Obtener liquidaciones pendientes
 
         Todos los endpoints retornan respuestas JSON.
-        Los endpoints requieren un token que esta en .env pero para esta prueba en local se deshabilito. Solo se requiere obligatoriamente cuando el entorno sea "produccion". 
+        Los endpoints requieren un token que esta en .env por lo tanto en el entorno local no se requiere autenticación. En producción todos los endpoints requieren Bearer Token.
         Se puede ver el comportamiento en el archivo app\Http\Middleware\CheckApiToken.php
     ',
     ],
@@ -51,7 +52,7 @@ return [
         /*
          * Define the title of the documentation's website. App name is used when this config is `null`.
          */
-        'title' => null,
+        'title' => 'LatinPay Challenge API',
 
         /*
          * Define the theme of the documentation. Available options are `light`, `dark`, and `system`.
