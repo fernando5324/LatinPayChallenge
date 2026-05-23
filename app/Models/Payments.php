@@ -33,27 +33,6 @@ class Payments extends Model
 
     public $timestamps = false;
 
-    public static function validateRequest($request)
-    {
-        $rules = [
-            #'payment_code' => 'required',
-            'merchant_id' => 'required',
-            'customer_document' => 'required',
-            'amount' => 'required|numeric|decimal:1,2',
-            'currency' => 'required|in:PEN,USD',
-            #'status' => 'required',
-           'description' => 'nullable|string',
-            #'created_at' => 'required',
-            #'updated_at' => 'required'
-        ];
-
-
-
-        $validate = $request->validate($rules);
-
-        return $validate;
-    }
-
 
     public static function generatePaymentCode()
     {

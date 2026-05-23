@@ -75,7 +75,7 @@
         }
     </style>
 </head>
-<body style="height: 100vh; overflow-y: hidden">
+<body style="height: 100vh; overflow-y: hidden" data-api-token="{{ config('app.api_token') }}">
 <elements-api
     id="docs"
     tryItCredentialsPolicy="{{ $config->get('ui.try_it_credentials_policy', 'include') }}"

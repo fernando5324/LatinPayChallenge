@@ -9,16 +9,21 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Payments;
 use App\Enums\PaymentStatus;
 use App\Enums\AuditStatus;
+use App\Enums\Messages;
+use App\Http\Requests\SavePaymentRequest;
+use Illuminate\Http\JsonResponse;
 
 class PaymentApiController extends Controller
 {
-    public function save(Request $request)
+/**
+ * Crear operación de pago
+ */
+
+    public function save(SavePaymentRequest  $request): JsonResponse
     {
         try {
 
             $code = Payments::generatePaymentCode();
-
-            Payments::validateRequest($request);
 
             $payment = Payments::create([
                 'payment_code' => $request->get('payment_code') ?? $code,
@@ -30,9 +35,9 @@ class PaymentApiController extends Controller
                 'description' => $request->get('description'),
             ]);
 
-            PaymentAudit::log($payment,AuditStatus::CREATED,$payment->status,'');
+            PaymentAudit::log($payment, AuditStatus::CREATED, $payment->status, '');
 
-            return response()->json($this->getDataResponseSuccess($payment), 200);
+            return response()->json($this->getDataResponse(true, Messages::CREATE_SUCCESS, $payment), 200);
         } catch (\Exception $e) {
             return response()->json($this->getDataResponseFail($e), 500);
         }

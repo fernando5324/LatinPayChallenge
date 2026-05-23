@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Messages;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
@@ -25,7 +26,7 @@ class Controller extends BaseController
 
         return [
             'success' => false,
-            'message' => config('app.env') == 'local' ? $message->getMessage() : 'Error inesperado',
+            'message' => config('app.env') == 'local' ? $message->getMessage() : Messages::INTERNAL_ERROR,
             'data' => null,
         ];
     }

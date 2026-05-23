@@ -2,20 +2,24 @@
 
 namespace App\Http\Api;
 
-use App\Enums\PaymentStatus;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Http\Requests\SettlementsRequest;
+use Illuminate\Http\JsonResponse;
 use App\Models\Payments;
 use Carbon\Carbon;
 
 class SettlementsApiController extends Controller
 {
-    public function settlementsCandidates(Request $request)
+
+    /**
+     * Consultar pagos candidatos a liquidación
+     */
+
+    public function settlementsCandidates(SettlementsRequest $request): JsonResponse
     {
-
+        
         try {
-
+            
             $payments = Payments::query()->where('status', 'PAID')->get(); #Evito OBSERVED y PENDING
 
             $result = $payments->map(function ($payment) {
@@ -45,9 +49,10 @@ class SettlementsApiController extends Controller
                     'cutoff_message' => $cutoffMessage,
                 ];
             })->filter()->values();
-
+/**
+             *  Devolver operaciones aptas para liquidación.
+             */
             return response()->json($this->getDataResponseSuccess($result), 200);
-
         } catch (\Exception $e) {
             return response()->json($this->getDataResponseFail($e), 500);
         }

@@ -3,14 +3,22 @@
 namespace App\Http\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\ExternalNotificationRequest;
+use Illuminate\Http\JsonResponse;
 
 
 class ExternalNotificationApiController extends Controller
 {
-    public function notifyExternal(Request $request)
+    /**
+     * Notificación a servicio externo
+     */
+
+    public function notifyExternal(ExternalNotificationRequest $request): JsonResponse
     {
         try {
+            /**
+             * Simular una notificación a un servicio externo cuando una operación queda PAID
+             */
 
             return response()->json([
                 'success' => true,

@@ -4,6 +4,8 @@ namespace App\Http\Api;
 
 use App\Enums\PaymentStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BankNotificationRequest;
+use App\Http\Requests\BankReconciliationRequest;
 use App\Jobs\NotifyPaymentConfirmedJob;
 use App\Models\BankReconciliationMovements;
 use App\Models\Payments;
@@ -12,21 +14,20 @@ use App\Models\BankNotifications;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\ProcessBankNotificationJob;
+use Illuminate\Http\JsonResponse;
 
 class BankNotificationApiController extends Controller
 {
 
     /**
-     * Notificar al banco
-
+     * Recibir confirmación bancaria
      */
 
-    public function notify(Request $request)
+    public function notify(BankNotificationRequest $request): JsonResponse
     {
         DB::beginTransaction();
         try {
             #Al ser solo un registro a guardar no es necesario pasarlo a jobs a menos que esté saturado
-            BankNotifications::validateRequest($request);
             $bankNotification = new BankNotifications();
             $bankNotification->event_id = $request->get('event_id') ?? null;
             $bankNotification->bank_transaction_id = $request->get('bank_transaction_id') ?? null;
@@ -61,17 +62,15 @@ class BankNotificationApiController extends Controller
 
 
     /**
-     * Reconciliación de pagos
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * Procesar conciliación de cierre del día
+
      */
 
-    public function reconciliation(Request $request)
+    public function reconciliation(BankReconciliationRequest $request): JsonResponse
     {
 
         DB::beginTransaction();
         try {
-            BankReconciliationMovements::validateRequest($request);
             $bankMovements = BankReconciliationMovements::pluck('bank_movement_id')->toArray();
             $payments = Payments::select('payment_code', 'amount', 'currency', 'status')->get();
             foreach ($request->get("movements") as $item) {

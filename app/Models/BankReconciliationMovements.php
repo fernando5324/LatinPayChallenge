@@ -29,18 +29,4 @@ class BankReconciliationMovements extends Model
 
     public $timestamps = false;
 
-    public static function validateRequest($request)
-    {
-        $rules = [
-            "movements"=>"required",
-            "bank"=>"required",
-            "process_date"=>"required|date_format:Y-m-d",
-            
-        ];
-
-        $validate = $request->validate($rules);
-
-        return $validate;
-    }
-
 }

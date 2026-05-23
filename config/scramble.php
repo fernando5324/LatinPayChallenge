@@ -29,7 +29,19 @@ return [
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
          */
-        'description' => '',
+        'description' => '
+        API de integración bancaria desarrollada como prueba técnica para LatinPay.
+
+        Esta API permite:
+        - Registrar operaciones de pago
+        - Procesar notificaciones bancarias
+        - Ejecutar conciliaciones
+        - Obtener liquidaciones pendientes
+
+        Todos los endpoints retornan respuestas JSON.
+        Los endpoints requieren un token que esta en .env pero para esta prueba en local se deshabilito. Solo se requiere obligatoriamente cuando el entorno sea "produccion". 
+        Se puede ver el comportamiento en el archivo app\Http\Middleware\CheckApiToken.php
+    ',
     ],
 
     /*

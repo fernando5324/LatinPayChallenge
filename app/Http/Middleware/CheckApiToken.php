@@ -9,7 +9,8 @@ class CheckApiToken
 {
     public function handle(Request $request, Closure $next)
     {
-        if ($request->bearerToken() !== config('app.api_token')) {
+        if (app()->environment('production') &&
+            $request->bearerToken() !== config('app.api_token')) {
             return response()->json([
                 'message' => 'Invalid token',
                 'data' => []

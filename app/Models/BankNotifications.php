@@ -33,25 +33,6 @@ class BankNotifications extends Model
 
     public $timestamps = true;
 
-    public static function validateRequest($request)
-    {
-        $rules = [
-            'event_id' => 'required',
-            'bank_transaction_id' => 'required',
-            'payment_code' => 'required',
-            #'payload' => 'required |json',
-            'amount' => 'required|numeric|decimal:1,2',
-            'currency' => 'required|in:PEN,USD',
-            'status' => 'required',
-        ];
-
-
-        $validate = $request->validate($rules);
-
-        return $validate;
-    }
-
-
     public static function generatePaymentCode()
     {
         $date = now()->format('Ymd');
